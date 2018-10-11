@@ -9,37 +9,63 @@
 import subprocess 
 
 # DEFINE constants
-pathToRepo = '../dotfiles'
-pathToVimFolder = 'dotvim'
+pathToTmp = '/tmp'
+pathToDotVim = 'dotvim'
+# various URLs
+urltaglist = "https://www.vim.org/scripts/download_script.php?src_id=19574"
+urlvcscommand = "https://github.com/vim-scripts/vcscommand.vim.git"
+urlnerdtree = "https://github.com/scrooloose/nerdtree.git"
+urlsyntastic = "https://github.com/vim-syntastic/syntastic.git"
 
-# TODO: Automate this, but for now simply hardcoding each os the 
+# TODO Check if folder exist and if not create it.
+subprocess.call(["mkdir",pathToDotVim],cwd=pathToTmp)
+
+# TODO Automate this, but for now simply hardcoding each os the 
 # installed modules
 
 # MODULE taglist
 # this has nto been update for ages https://github.com/vim-scripts/taglist.vim
 # as such best way to find is from https://www.vim.org/scripts/script.php?script_id=273
 # my taglist onthe latest (4.6) version
+# TODO check if taglist folder exist
+taglistFolder = "taglist"
+taglistFile = "taglist_46.zip"
+subprocess.call(["mkdir",taglistFolder],cwd=pathToTmp)
+subprocess.call(["wget","-O",pathToTmp+ "/" + taglistFolder + "/" + taglistFile,urltaglist])
+subprocess.call(["unzip",taglistFile],cwd=pathToTmp+"/"+taglistFolder)
+# deleting zip file to keep vimfolder clean
+subprocess.call(["rm","-fR",pathToTmp + "/" + taglistFolder + "/" + taglistFile])
+# copy plugin into vimfolder
+subprocess.call("cp -r "+pathToTmp+"/"+taglistFolder+"/* "+pathToTmp+"/"+pathToDotVim+"/",shell=True)
+# cleanup
+subprocess.call(["rm","-fR",pathToTmp + "/" + taglistFolder])
 
 # MODULE vcscommand
 # using GitHub repository git clone https://github.com/vim-scripts/vcscommand.vim.git
 # clone repo
-subprocess.call(["git","clone","https://github.com/vim-scripts/vcscommand.vim.git"],cwd='/tmp')
+vcscommandFolder = "vcscommand.vim"
+subprocess.call(["git","clone",urlvcscommand],cwd=pathToTmp)
 # move files into my repository 
-subprocess.call("cp /tmp/vcscommand.vim/doc/* ../dotfiles/dotvim/doc/",shell=True)
-subprocess.call("cp /tmp/vcscommand.vim/plugin/* ../dotfiles/dotvim/plugin/",shell=True)
-subprocess.call("cp /tmp/vcscommand.vim/syntax/* ../dotfiles/dotvim/syntax/",shell=True)
+subprocess.call("cp -r "+pathToTmp+"/"+vcscommandFolder+"/* "+pathToTmp+"/"+pathToDotVim+"/",shell=True)
+# cleanup
+subprocess.call(["rm","-fR",pathToTmp + "/" + vcscommandFolder])
 
 # MODULE NERDTree
 # using GitHub repository git clone https://github.com/scrooloose/nerdtree.git
 # clone repo
-subprocess.call(["git","clone","https://github.com/scrooloose/nerdtree.git"],cwd='/tmp')
+subprocess.call(["git","clone",urlnerdtree],cwd=pathToTmp)
 # move files into my repository
-subprocess.call("cp -r /tmp/nerdtree/autoload/* ../dotfiles/dotvim/autoload/",shell=True)
-subprocess.call("cp /tmp/nerdtree/doc/* ../dotfiles/dotvim/doc/",shell=True)
-subprocess.call("cp /tmp/nerdtree/plugin/* ../dotfiles/dotvim/plugin/",shell=True)
-subprocess.call("cp /tmp/nerdtree/syntax/* ../dotfiles/dotvim/syntax/",shell=True)
-subprocess.call("cp -r /tmp/nerdtree/lib/* ../dotfiles/dotvim/lib/",shell=True)
-# special folder only for this plugin
-# TODO: check if it exist
-subprocess.call("cp /tmp/nerdtree/nerdtree_plugin/* ../dotfiles/dotvim/nerdtree_plugin/",shell=True)
+nerdtreeFolder = "nerdtree"
+subprocess.call("cp -r "+pathToTmp+"/"+nerdtreeFolder+"/* "+pathToTmp+"/"+pathToDotVim+"/",shell=True)
+# cleanup
+subprocess.call(["rm","-fR",pathToTmp + "/" + nerdtreeFolder])
+
+# MODULE sysntastic 
+# clone repo
+subprocess.call(["git","clone",urlsyntastic],cwd=pathToTmp)
+# move files into my repository
+syntasticFolder = "syntastic"
+subprocess.call("cp -r "+pathToTmp+"/"+syntasticFolder+"/* "+pathToTmp+"/"+pathToDotVim+"/",shell=True)
+# cleanup
+subprocess.call(["rm","-fR",pathToTmp + "/" + syntasticFolder])
 
