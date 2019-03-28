@@ -1,5 +1,12 @@
 #!/bin/bash
 
+# Copyright (c) 2019 Sergey Shkundaleu (http://sergey.iontec.co). All rights reserved.
+# This code is licensed under the MIT License (MIT).
+# THIS CODE IS PROVIDED *AS IS* WITHOUT WARRANTY OF
+# ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING ANY
+# IMPLIED WARRANTIES OF FITNESS FOR A PARTICULAR
+# PURPOSE, MERCHANTABILITY, OR NON-INFRINGEMENT.
+
 # Checking version of GPG
 PACKAGES="gpg gpg-agent pcscd scdaemon"
 GPG_COMMAND="gpg" 
@@ -28,34 +35,35 @@ fi
 # Backup old config files so that user can recover manually
 if [ -f ~/.gnupg/gpg.conf ]; then
 	echo "INFO Found gpg.conf"
-	echo "INFO Making a backup copy into gpg.conf.bak"
+	echo "INFO Making a backup copy into gpg.conf.bak and creating new config"
 	mv ~/.gnupg/gpg.conf ~/.gnupg/gpg.conf.bak
 fi
 if [ -f ~/.gnupg/gpg-agent.conf ]; then
 	echo "INFO Found gpg-agent.conf"
-	echo "INFO Making a backup copy into gpg-agent.conf.bak"
+	echo "INFO Making a backup copy into gpg-agent.conf.bak and creating new config"
 	mv ~/.gnupg/gpg.conf ~/.gnupg/gpg.conf.bak
 fi
 # Create new config file for gpg
 # This section is personal and config options is my personal preference (Sergey Sh)
 echo "default-preference-list SHA512 SHA384 SHA256 SHA224 AES256 AES192 AES CAST5 ZLIB BZIP2 ZIP Uncompressed" >> ~/.gnupg/gpg.conf
-echo "cert-digest-algo SHA512" >> ~/.gnupg/gpg.cof
-echo "s2k-digest-algo SHA512" >> ~/.gnupg/gpg.cof
-echo "s2k-cipher-algo AES256" >> ~/.gnupg/gpg.cof
-echo "no-emit-version" >> ~/.gnupg/gpg.cof
-echo "keyid-format 0xlong" >> ~/.gnupg/gpg.cof
-echo "list-options show-uid-validity" >> ~/.gnupg/gpg.cof
-echo "verify-options show-uid-validity" >> ~/.gnupg/gpg.cof
-echo "with-fingerprint" >> ~/.gnupg/gpg.cof
-echo "use-agent" >> ~/.gnupg/gpg.cof
+echo "cert-digest-algo SHA512" >> ~/.gnupg/gpg.conf
+echo "s2k-digest-algo SHA512" >> ~/.gnupg/gpg.conf
+echo "s2k-cipher-algo AES256" >> ~/.gnupg/gpg.conf
+echo "no-emit-version" >> ~/.gnupg/gpg.conf
+echo "keyid-format 0xlong" >> ~/.gnupg/gpg.conf
+echo "list-options show-uid-validity" >> ~/.gnupg/gpg.conf
+echo "verify-options show-uid-validity" >> ~/.gnupg/gpg.conf
+echo "with-fingerprint" >> ~/.gnupg/gpg.conf
+echo "use-agent" >> ~/.gnupg/gpg.conf
 # Creating new config file for gpg-agent
 # This section is personal and config options is my personal preference (Sergey Sh)
-echo "enable-ssh-support" >> ~/.gnupg/gpg-agent.cof
-echo "pinentry-program /usr/bin/pinentry-gnome3" >> ~/.gnupg/gpg-agent.cof
-echo "default-cache-ttl 60" >> ~/.gnupg/gpg-agent.cof
-echo "max-cache-ttl 120" >> ~/.gnupg/gpg-agent.cof
+echo "enable-ssh-support" >> ~/.gnupg/gpg-agent.conf
+echo "pinentry-program /usr/bin/pinentry-gnome3" >> ~/.gnupg/gpg-agent.conf
+echo "default-cache-ttl 60" >> ~/.gnupg/gpg-agent.conf
+echo "max-cache-ttl 120" >> ~/.gnupg/gpg-agent.conf
 # Indentify if gpg-agent already running and find out variable value
-if [ ! -z `export | grep GPG_AGENT_INFO`]; then
+GPG_AGEN_ACTIVE=`export | grep GPG_AGENT_INFO`
+if [ ! -z "${GPG_AGEN_ACTIVE// }"]; then
 	# Agent already potentially running 
 	# Check if gpg agent already accepting ssh connections
 	if [ -z `gpgconf --list-dirs agent-ssh-socket`]; then
@@ -79,7 +87,7 @@ else
 	echo "ERROR In case thing does not work out please recover from backup"
 	# Making backup copy of .bashrc
 	if [ -f ~/.bashrc ]; then
-		mv ~/.bashrc ~/.bashrc.bak
+		cp ~/.bashrc ~/.bashrc.bak
 	fi
 	echo 'eval $(gpg-agent --daemon --enable-ssh-support)' >> ~/.bashrc
 	echo 'export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)' >> ~/.bashrc
