@@ -89,6 +89,8 @@ if [ ! -z "${GPG_AGEN_ACTIVE// }" ]; then
 	echo "INFO Updating .bashrc."
 	# Writing auto socket detection into config file
 	echo 'export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)' >> ~/.bashrc
+	echo "INFO Updating SSH_AUTH_SOCK variable"
+	export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)
 else
 	# Since we can't find GPG_AGENT_INFO then we need to put GPG agent initiation into bashrc
 	echo "ERROR GPG_AGENT_INFO environment variable was not found"
@@ -107,7 +109,7 @@ else
 	echo 'export SSH_AUTH_SOCK=$(gpgconf --list-dirs agent-ssh-socket)' >> ~/.bashrc
 fi
 # Check is GPG COMMAND was gpg2 then inject alias for the future reference.
-if [ $GPG_COMMAND -e "gpg2" ]; then
+if [ $GPG_COMMAND == "gpg2" ]; then
 	# Adding alias
 	echo "WARNING Creating alias for gpg2"
 	echo "alias gpg='gpg2'" >> ~/.bash_aliases
