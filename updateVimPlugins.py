@@ -8,11 +8,17 @@
 # First of all importing neccesary modules
 import subprocess 
 import json
+import sys
 
 # DEFINE constants
 pathToTmp = '/tmp'
-pathToDotVim = 'dotvim'
 confRepo = "https://github.com/sergshk/dotfls.git"
+if ("--essential" == sys.argv[1]):
+    pathToDotVim = 'dotvimessential'
+    pathToConfJson = '../dotfls/vim_essential.json'
+else:
+    pathToDotVim = 'dotvim'
+    pathToConfJson = 'vim_plugins.json'
 
 # defining method to install plugins from github or direct download of a zip file
 def installPlugin(folderName,method,url,fileName):
@@ -33,7 +39,7 @@ def installPlugin(folderName,method,url,fileName):
 # cloning my conf repo into tmp
 subprocess.call(["git","clone",confRepo],cwd=pathToTmp)
 # reading JSON file
-with open(pathToTmp+"/dotfls/vim_plugins.json") as myfile:
+with open(pathToTmp+"/dotfls/"+pathToConfJson) as myfile:
     confJson = json.load(myfile)
 
 # TODO Check if folder exist and if not create it.
