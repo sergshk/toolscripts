@@ -13,7 +13,7 @@ import sys
 # DEFINE constants
 pathToTmp = '/tmp'
 confRepo = "https://github.com/sergshk/dotfls.git"
-if ("--essential" == sys.argv[1]):
+if (len(sys.argv) > 1 and "--essential" == sys.argv[1]):
     pathToDotVim = 'dotvimessential'
     pathToConfJson = '../dotfls/vim_essential.json'
 else:
